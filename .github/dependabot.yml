@@ -1,0 +1,37 @@
+version: 2
+
+updates:
+  # marked is the one dependency that runs in the page, and it reads every
+  # chapter a visitor pastes. The rest is the toolchain: Astro, Biome,
+  # TypeScript, Vitest, and Playwright. A break in one of those breaks the
+  # checks, which is quieter than a break in the converter itself.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: [dependencies]
+    commit-message:
+      prefix: "deps"
+    ignore:
+      # @types/node stays on the major that matches what actually runs. The
+      # newer types are a superset of the older ones, so every check still
+      # passes, and the failure arrives later, when a call that compiled is
+      # missing at run time. Raise this with .nvmrc, in the same commit.
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+      # astro check supports TypeScript 5 and 6 only. A major update here
+      # fails the type check in CI, so it waits until @astrojs/check allows it.
+      - dependency-name: "typescript"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: [dependencies, ci]
+    commit-message:
+      prefix: "ci"
