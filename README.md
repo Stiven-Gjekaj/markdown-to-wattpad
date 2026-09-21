@@ -210,7 +210,7 @@ scripts/
 pnpm test
 ```
 
-98 tests across 10 files.
+99 tests across 10 files.
 Each one writes the Markdown it needs inside the test.
 
 **The page, in a browser.**

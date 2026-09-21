@@ -44,7 +44,7 @@ in place.
   labels, and the styled ending.
 - **The draft and the switches stay in the browser** across a reload. Nothing
   leaves the device.
-- **98 unit tests and 15 browser tests.** The browser tests copy with the
+- **99 unit tests and 15 browser tests.** The browser tests copy with the
   button, read the clipboard back, and paste into an editable box.
 - **CI, CodeQL, and a deployment to GitHub Pages.**
 
