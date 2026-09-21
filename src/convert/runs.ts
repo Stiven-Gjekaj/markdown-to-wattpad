@@ -1,4 +1,5 @@
 import { Lexer, type Token } from "marked";
+import { mendings } from "./mend";
 
 /**
  * Reads inline Markdown into runs of text.
@@ -52,11 +53,52 @@ type Piece = Run | "break";
 
 const OPTIONS = { gfm: true, breaks: true } as const;
 
-/** Reads a piece of inline Markdown, which may hold line breaks. */
+/**
+ * Reads a piece of inline Markdown, which may hold line breaks.
+ *
+ * When the text comes out with asterisks still in it, the marks were broken
+ * before they arrived, and a mended copy is tried. See mend.ts. The mended
+ * copy is used only when it reads with no asterisks left at all. A repair
+ * that removes some of them and not the rest is a guess, and the original
+ * shows the writer exactly what went wrong.
+ */
 export function readLines(markdown: string, found: Found): Line[] {
+  let best = read(markdown);
+  if (hasStray(best.lines)) {
+    for (const candidate of mendings(markdown)) {
+      const attempt = read(candidate);
+      if (!hasStray(attempt.lines)) {
+        best = attempt;
+        break;
+      }
+    }
+  }
+  found.images.push(...best.found.images);
+  found.links += best.found.links;
+  found.struck += best.found.struck;
+  found.code += best.found.code;
+  found.tags.push(...best.found.tags);
+  return best.lines;
+}
+
+function read(markdown: string): { lines: Line[]; found: Found } {
   const pieces: Piece[] = [];
+  const found = emptyFound();
   walk(Lexer.lexInline(markdown, OPTIONS), newMarks(), pieces, found);
-  return splitLines(pieces);
+  return { lines: splitLines(pieces), found };
+}
+
+/**
+ * An asterisk that a reader would see and that is not part of a word.
+ *
+ * "f*ck" keeps its asterisk on purpose, and "5 * 3" is arithmetic. Two
+ * asterisks together, or one against the start or the end of a word, are a
+ * bold or italic mark that did not find its partner.
+ */
+export const STRAY = /\*\*|(^|\s)\*\S|\S\*(\s|$)/;
+
+function hasStray(lines: Line[]): boolean {
+  return lines.some((line) => STRAY.test(textOf(line)));
 }
 
 function newMarks(): Marks {

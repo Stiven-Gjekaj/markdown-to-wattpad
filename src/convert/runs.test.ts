@@ -91,8 +91,16 @@ describe("reading inline Markdown into runs", () => {
     expect(read("\\*not italic\\*")).toEqual([[plain("*not italic*")]]);
   });
 
-  it("keeps an asterisk that closes nothing as text", () => {
-    expect(textOf(read("**[Volume 7] **")[0])).toBe("**[Volume 7] **");
+  it("mends a closing mark that has a space before it", () => {
+    // CommonMark will not close on "** " and shows the asterisks. The
+    // published chapters hold this shape, and Wattpad shows it in bold.
+    expect(read("**[Volume 7] **")).toEqual([
+      [{ text: "[Volume 7]", bold: true, italic: false, underline: false }],
+    ]);
+  });
+
+  it("keeps asterisks that no repair can place", () => {
+    expect(textOf(read("a ** b")[0])).toBe("a ** b");
   });
 
   it("keeps a single tilde, and removes two", () => {
