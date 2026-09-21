@@ -1,0 +1,25 @@
+# Line endings in the files that the tests read.
+#
+# The converter reads a line ending as a break in a paragraph, so a test
+# compares the lines that come back. A Windows checkout converts a text file to
+# CRLF by default. The converter accepts CRLF, but a test that holds its
+# expected output in a file then compares bytes that the checkout changed.
+#
+# Pin the text files to LF on every platform. This is not a preference about
+# editors. It is the condition under which the tests mean anything on Windows.
+*.ts text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.svg text eol=lf
+*.astro text eol=lf
+
+# Binary, and never converted.
+*.png binary
+*.ico binary
+*.woff2 binary
