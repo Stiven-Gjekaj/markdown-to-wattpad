@@ -107,11 +107,43 @@ describe("converting a chapter", () => {
   it("gives an empty part for empty text", () => {
     const result = convert("  \n\n ");
     expect(result).toMatchObject({ title: "", html: "", text: "", words: 0 });
+    expect(result.notices).toEqual([]);
   });
 
   it("counts the words", () => {
     expect(convert(CHAPTER).words).toBe(countWords(convert(CHAPTER).text));
     expect(countWords("One two, three.")).toBe(3);
     expect(countWords("- * * * \u2014")).toBe(0);
+  });
+});
+
+describe("reporting what Wattpad cannot hold", () => {
+  it("names each kind once", () => {
+    const { notices } = convert(
+      [
+        "![The map](map.png)",
+        "A [link](https://example.com) and ~~a strike~~ and `code`.",
+        "An <ERROR> tag and an em dash \u2014 here.",
+      ].join("\n\n"),
+    );
+    expect(notices).toEqual([
+      { kind: "image", alts: ["The map"] },
+      { kind: "link", count: 1 },
+      { kind: "strike", count: 1 },
+      { kind: "code", count: 1 },
+      { kind: "tag", names: ["error"] },
+      { kind: "dash", count: 1 },
+    ]);
+  });
+
+  it("names the paragraphs that still show asterisks", () => {
+    const { notices } = convert(
+      "Clean.\n\nBroken ** here.\n\n* * *\n\nAlso *clean*.",
+    );
+    expect(notices).toEqual([{ kind: "stray", paragraphs: [2] }]);
+  });
+
+  it("says nothing about a clean chapter", () => {
+    expect(convert(CHAPTER).notices).toEqual([]);
   });
 });
