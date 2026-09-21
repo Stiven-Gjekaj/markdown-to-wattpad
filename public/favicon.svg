@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Markdown to Wattpad</title>
+  <!-- A pilcrow, the mark for a paragraph, because paragraphs are what the
+       tool rearranges. -->
+  <rect width="64" height="64" rx="14" fill="#241d17"/>
+  <path d="M30 14H44V50H40V18H34V50H30V36A11 11 0 0 1 30 14Z" fill="#ff8a4c"/>
+</svg>

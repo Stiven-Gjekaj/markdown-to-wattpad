@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://stiven-gjekaj.github.io/markdown-to-wattpad/sitemap-index.xml

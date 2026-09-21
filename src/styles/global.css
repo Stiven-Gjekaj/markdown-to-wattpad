@@ -1,0 +1,740 @@
+/*
+ * The palette is ink on paper. The preview is the part of the page that a
+ * writer compares with Wattpad, so it looks like a page of a book, and the
+ * rest stays out of its way.
+ *
+ * Every colour is a token here and nowhere else. The dark theme redefines
+ * the tokens and touches no rule below them.
+ */
+
+:root {
+  --bg: #f6f1ea;
+  --surface: #fffdf9;
+  --surface-2: #f0e8dd;
+  --border: #e2d7c8;
+  --text: #241d17;
+  --muted: #6c6055;
+  --accent: #c2410c;
+  --accent-hover: #a93609;
+  --accent-text: #ffffff;
+  --page: #ffffff;
+  --page-text: #1d1a17;
+  --code-bg: #f3ece2;
+  --warn-bg: #fff3e0;
+  --warn-edge: #e8a24a;
+  --warn-text: #6b4100;
+  --focus: #c2410c;
+  --shadow: 0 1px 2px rgb(60 40 20 / 6%), 0 8px 24px rgb(60 40 20 / 6%);
+
+  --font-ui:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-page:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-code:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14110e;
+    --surface: #1c1814;
+    --surface-2: #26201b;
+    --border: #372f28;
+    --text: #efe7dd;
+    --muted: #a99d90;
+    --accent: #ff8a4c;
+    --accent-hover: #ffa06c;
+    --accent-text: #1b0f07;
+    --page: #201b17;
+    --page-text: #ede5db;
+    --code-bg: #26201b;
+    --warn-bg: #2d2215;
+    --warn-edge: #b9782c;
+    --warn-text: #f3c98a;
+    --focus: #ff8a4c;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 25%);
+
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 10;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* The header, the footer, and the sections share one column. */
+.site-header,
+.intro,
+.tool,
+.how,
+.site-footer,
+.noscript {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 16px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--text);
+}
+
+.mark-back {
+  fill: var(--text);
+}
+
+.mark-ink {
+  fill: var(--accent);
+}
+
+.site-nav {
+  display: flex;
+  gap: 20px;
+  font-size: 0.95rem;
+}
+
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--text);
+}
+
+.intro {
+  padding-block: 12px 24px;
+}
+
+.intro h1 {
+  margin: 0 0 8px;
+  font-family: var(--font-page);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.intro p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* The converter: the Markdown on the left, the Wattpad part on the right. */
+.tool {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.source-pane {
+  position: sticky;
+  top: 16px;
+  height: min(82vh, 920px);
+}
+
+.pane-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pane-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pane-actions {
+  display: flex;
+  gap: 2px;
+}
+
+#source {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 16px;
+  border: 0;
+  border-radius: 0 0 14px 14px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-code);
+  font-size: 14px;
+  line-height: 1.65;
+  resize: none;
+}
+
+#source:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+#source.dropping {
+  outline: 2px dashed var(--accent);
+  outline-offset: -8px;
+  background: var(--surface-2);
+}
+
+.stats {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 0;
+}
+
+.part-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-page);
+  font-size: 1.2rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.part-title.missing::before {
+  content: "No title. Start the chapter with a # heading to fill the title box.";
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+/* The preview, and the example pages below the converter. */
+.page {
+  background: var(--page);
+  color: var(--page-text);
+  font-family: var(--font-page);
+  font-size: 17px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.page p {
+  margin: 0 0 1.1em;
+}
+
+.page p:last-child {
+  margin-bottom: 0;
+}
+
+#preview {
+  margin: 14px;
+  min-height: 320px;
+  max-height: min(64vh, 760px);
+  overflow: auto;
+  padding: 28px clamp(18px, 4vw, 40px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+#preview.empty {
+  display: grid;
+  place-items: center;
+}
+
+#preview.empty::before {
+  content: "Your chapter shows here the way Wattpad will show it.";
+  max-width: 30ch;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+#preview p.stray {
+  margin-inline: -10px;
+  padding-inline: 8px;
+  border-left: 3px solid var(--warn-edge);
+  background: var(--warn-bg);
+}
+
+#preview p:target {
+  animation: flash 1.6s ease-out;
+}
+
+@keyframes flash {
+  from {
+    box-shadow: 0 0 0 4px var(--warn-edge);
+  }
+  to {
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
+
+/* Buttons. */
+button,
+.file-button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary,
+.secondary {
+  min-height: 42px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.primary {
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.secondary {
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.quiet {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.quiet:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.file-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The input stays in the page so a keyboard and a screen reader reach it. */
+.file-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-button:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.copy-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+
+.status {
+  flex-basis: 100%;
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.notices {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0 14px 14px;
+  list-style: none;
+}
+
+.notices:empty {
+  display: none;
+}
+
+.notices li {
+  padding: 10px 12px;
+  border-left: 3px solid var(--warn-edge);
+  border-radius: 8px;
+  background: var(--warn-bg);
+  color: var(--warn-text);
+  font-size: 0.9rem;
+}
+
+.notices a {
+  color: inherit;
+  font-weight: 600;
+}
+
+/* The layout options, as switches. */
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 18px;
+  margin: 0;
+  padding: 14px;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.options legend {
+  float: left;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-bottom: 2px;
+  padding: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.switch input {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 22px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.switch input::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+  transition: transform 150ms ease;
+}
+
+.switch input:checked {
+  background: var(--accent);
+}
+
+.switch input:checked::before {
+  transform: translateX(14px);
+}
+
+.noscript {
+  padding-block: 12px;
+  color: var(--warn-text);
+}
+
+/* The explanation below the converter. */
+.how {
+  padding-block: 48px 24px;
+}
+
+.how h2 {
+  margin: 32px 0 12px;
+  font-family: var(--font-page);
+  font-size: 1.5rem;
+}
+
+.how h2:first-child {
+  margin-top: 0;
+}
+
+.how-lead {
+  max-width: 70ch;
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  position: relative;
+  padding: 16px 16px 16px 52px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.steps strong {
+  color: var(--text);
+}
+
+.examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.example {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.example figcaption {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.example-source {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--code-bg);
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.example-page {
+  flex: 1;
+  padding: 16px 18px;
+  font-size: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.site-footer {
+  padding-block: 32px 40px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.site-footer p {
+  margin: 0 0 6px;
+  max-width: 70ch;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-links span {
+  opacity: 0.5;
+}
+
+/* One column on a narrow screen, with the copy buttons kept in reach. */
+@media (max-width: 900px) {
+  .tool {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .source-pane {
+    position: static;
+    height: auto;
+  }
+
+  #source {
+    height: 44vh;
+    flex: none;
+  }
+
+  #preview {
+    max-height: 62vh;
+  }
+
+  .copy-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 14px 14px;
+    background: var(--surface);
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header,
+  .intro,
+  .tool,
+  .how,
+  .site-footer,
+  .noscript {
+    padding-inline: 16px;
+  }
+
+  .site-nav a[href="#how"] {
+    display: none;
+  }
+
+  .pane-actions .quiet {
+    padding-inline: 7px;
+  }
+
+  .copy-bar .primary {
+    flex: 1;
+  }
+}
+
+/* Every motion on the page is named here, so it can stop without !important. */
+@media (prefers-reduced-motion: reduce) {
+  .primary,
+  .secondary,
+  .switch input,
+  .switch input::before {
+    transition: none;
+  }
+
+  #preview p:target {
+    animation: none;
+  }
+}

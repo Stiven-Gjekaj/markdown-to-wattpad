@@ -1,0 +1,200 @@
+---
+import { convert } from "../convert";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Each example on this page is converted when the site is built, by the
+// same code that runs in the browser. A description of the rules written by
+// hand would drift away from what the code does. These cannot.
+const examples = [
+  {
+    name: "Narration is centred",
+    markdown: "The rain had stopped by the time she reached the mill.",
+  },
+  {
+    name: "Dialogue is one block on the left",
+    markdown: "**MAR**: You came.\n\n**TOM**: I said I would.",
+  },
+  {
+    name: "A plain speaker label is set in bold",
+    markdown: "MSTR: Name.\nALX: Alexander.",
+  },
+  {
+    name: "The chapter ending is underlined, and the closing thought is bold",
+    markdown:
+      '***End of Chapter 12***\n\n***"The Lamp"***\n\n[ Some promises are kept by showing up. ]',
+  },
+  {
+    name: "A scene break stays as you typed it",
+    markdown: "---",
+  },
+  {
+    name: "Underline needs a tag, because Markdown has none",
+    markdown: "The sign said <u>closed</u>.",
+  },
+].map((example) => ({
+  ...example,
+  paragraphs: convert(example.markdown).paragraphs,
+}));
+---
+
+<BaseLayout
+  title="Markdown to Wattpad"
+  description="Turn a chapter written in Markdown into text that you paste into Wattpad, with the bold, the italics, the underline, and the alignment already in place."
+>
+  <section class="intro">
+    <h1>Markdown in. Wattpad out.</h1>
+    <p>
+      Paste a chapter written in Markdown. Copy it into the Wattpad writer
+      with the bold, the italics, the underline, and the alignment already in
+      place. No asterisks reach your readers.
+    </p>
+  </section>
+
+  <section class="tool" aria-label="Converter">
+    <div class="pane source-pane">
+      <div class="pane-bar">
+        <label for="source" class="pane-title">Markdown</label>
+        <div class="pane-actions">
+          <button type="button" id="load-example" class="quiet">Example</button>
+          <label class="quiet file-button">
+            Open file
+            <input
+              type="file"
+              id="open-file"
+              accept=".md,.markdown,.txt,text/markdown,text/plain"
+            />
+          </label>
+          <button type="button" id="clear" class="quiet">Clear</button>
+        </div>
+      </div>
+      <textarea
+        id="source"
+        spellcheck="true"
+        autocomplete="off"
+        placeholder={"# (Chapter 1 || Volume 1) The Title.\n\nNarration goes here.\n\n**ABC**: Dialogue goes here.\n\n***End of Chapter 1***\n\n***\"The Title\"***"}
+      ></textarea>
+    </div>
+
+    <div class="pane output-pane">
+      <div class="pane-bar">
+        <h2 class="pane-title">Wattpad</h2>
+        <span id="stats" class="stats"></span>
+      </div>
+
+      <div class="title-row">
+        <p id="part-title" class="part-title missing" aria-label="Part title">
+        </p>
+        <button type="button" id="copy-title" class="secondary" disabled>
+          Copy title
+        </button>
+      </div>
+
+      <div
+        id="preview"
+        class="page empty"
+        tabindex="0"
+        aria-label="Preview of the part"
+        aria-live="off"
+      >
+      </div>
+
+      <div class="copy-bar">
+        <button type="button" id="copy-text" class="primary" disabled>
+          Copy text for Wattpad
+        </button>
+        <button type="button" id="copy-plain" class="secondary" disabled>
+          Copy plain text
+        </button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </div>
+
+      <ul id="notices" class="notices" aria-label="Things to check"></ul>
+
+      <fieldset class="options">
+        <legend>Layout</legend>
+        <label class="switch">
+          <input type="checkbox" id="opt-center" checked />
+          <span>Centre the narration</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="opt-join" checked />
+          <span>Join dialogue lines into one block</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="opt-bold" checked />
+          <span>Set speaker labels in bold</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="opt-ending" checked />
+          <span>Style the chapter ending</span>
+        </label>
+      </fieldset>
+    </div>
+  </section>
+
+  <noscript>
+    <p class="noscript">
+      The converter needs JavaScript. It runs in your browser, and your text
+      never leaves it.
+    </p>
+  </noscript>
+
+  <section id="how" class="how">
+    <h2>How to paste into Wattpad</h2>
+    <ol class="steps">
+      <li>
+        <strong>Open the part in the Wattpad writer, in a browser.</strong>{" "}
+        Wattpad says that a paste in its phone app loses more formatting than
+        a paste on the website.
+      </li>
+      <li>
+        <strong>Press Copy title</strong>, click the title box of the part,
+        and paste.
+      </li>
+      <li>
+        <strong>Press Copy text for Wattpad</strong>, click into the story
+        text, and paste.
+      </li>
+      <li>
+        <strong>Look at the alignment before you publish.</strong>{" "}
+        Wattpad's help centre warns that a paste does not always keep it.
+        When a paragraph comes out on the wrong side, select it and use the
+        align buttons in the writer.
+      </li>
+    </ol>
+
+    <h2>What changes</h2>
+    <p class="how-lead">
+      The first line of the chapter, when it is a heading, goes into the title
+      box and not into the text. The rest follows these rules.
+    </p>
+    <div class="examples">
+      {
+        examples.map((example) => (
+          <figure class="example">
+            <figcaption>{example.name}</figcaption>
+            <pre class="example-source"><code>{example.markdown}</code></pre>
+            <div class="page example-page">
+              {example.paragraphs.map((paragraph) => (
+                <p
+                  style={`text-align:${paragraph.align};`}
+                  set:html={paragraph.html}
+                />
+              ))}
+            </div>
+          </figure>
+        ))
+      }
+    </div>
+
+    <h2>What Wattpad cannot hold</h2>
+    <p class="how-lead">
+      Wattpad keeps paragraphs, bold, italics, underline, and the alignment.
+      It does not keep headings, links, lists, strikethrough, or pictures in a
+      paste. The converter keeps the words of each one and tells you, under
+      the preview, what it changed. It also tells you when an asterisk would
+      reach your readers because a bold or italic mark has no partner.
+    </p>
+  </section>
+
+</BaseLayout>
