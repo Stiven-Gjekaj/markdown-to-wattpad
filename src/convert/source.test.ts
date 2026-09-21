@@ -49,4 +49,8 @@ describe("reading the source", () => {
     const source = readSource("Before.<!-- a note\n\nstill the note -->After.");
     expect(source.body).toBe("Before.After.");
   });
+
+  it("removes a comment that the first removal puts together", () => {
+    expect(readSource("A<!<!-- one -->-- two -->B").body).toBe("AB");
+  });
 });

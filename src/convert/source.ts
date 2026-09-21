@@ -32,9 +32,27 @@ export function readSource(input: string): Source {
   // nothing for it, so Wattpad must receive nothing for it either. It goes
   // here, before the lines are split, because a comment can span a blank line
   // and would otherwise cut one paragraph into two.
-  body = body.replace(COMMENT, "");
+  body = removeComments(body);
 
   return { body, title };
+}
+
+/**
+ * Removes comments until none is left.
+ *
+ * One pass is not enough. In "<!<!-- a -->-- b -->" the first pass removes
+ * the inner comment, and the two halves around it join into a new one. The
+ * converter escapes every character before it writes any markup, so a
+ * leftover "<!--" could only ever show as text. It must not show at all.
+ */
+function removeComments(text: string): string {
+  let before = "";
+  let after = text;
+  while (after !== before) {
+    before = after;
+    after = before.replace(COMMENT, "");
+  }
+  return after;
 }
 
 /**
