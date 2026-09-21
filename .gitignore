@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.astro/
+
+# Environment files
+# These files hold secrets.
+# Never commit them.
+.env
+.env.local
+.env.*.local
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editors
+.idea/
+*.swp
+*.swo
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Claude Code
+# This block hides the personal files and keeps the shared ones.
+# Keep settings.json in the repository.
+# It holds the commit attribution rule that AGENTS.md demands.
+# That rule must travel with the repository, and not stay on one machine.
+# The AGENTS.md section "What to keep" gives this reason.
+.claude/*
+!.claude/settings.json
