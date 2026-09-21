@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1064 188" width="1064" height="188" role="img" aria-label="Markdown to Wattpad">
+  <title>Markdown to Wattpad</title>
+
+  <defs>
+    <!-- Ink that warms as it goes, from ember to amber. The page it sits on
+         is the colour of the site's dark theme. -->
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#ff7a3d"/>
+      <stop offset="0.55" stop-color="#ff9a4f"/>
+      <stop offset="1" stop-color="#ffc46b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1064" height="188" rx="16" fill="#14110e"/>
+  <rect x="6" y="6" width="1052" height="176" rx="11"
+        fill="none" stroke="#ff8a4c" stroke-opacity="0.25" stroke-width="2"/>
+
+  <!-- The pilcrow, the mark for a paragraph, because paragraphs are what the
+       tool rearranges. Each row of pixels is one rectangle in the path. -->
+  <path fill="url(#ink)" d="M64 58h48v8h-48zM56 66h32v8h-32zM96 66h8v8h-8zM56 74h32v8h-32zM96 74h8v8h-8zM64 82h24v8h-24zM96 82h8v8h-8zM80 90h8v8h-8zM96 90h8v8h-8zM80 98h8v8h-8zM96 98h8v8h-8zM80 106h8v8h-8zM96 106h8v8h-8zM80 114h8v8h-8zM96 114h8v8h-8zM80 122h8v8h-8zM96 122h8v8h-8z"/>
+
+  <!-- "MARKDOWN" and "WATTPAD" in the ink, and "TO" between them in a
+       quieter colour, drawn on a grid of 8 units. -->
+  <path fill="url(#ink)" d="M152 66h8v8h-8zM184 66h8v8h-8zM152 74h16v8h-16zM176 74h16v8h-16zM152 82h8v8h-8zM168 82h8v8h-8zM184 82h8v8h-8zM152 90h8v8h-8zM168 90h8v8h-8zM184 90h8v8h-8zM152 98h8v8h-8zM184 98h8v8h-8zM152 106h8v8h-8zM184 106h8v8h-8zM152 114h8v8h-8zM184 114h8v8h-8zM208 66h24v8h-24zM200 74h8v8h-8zM232 74h8v8h-8zM200 82h8v8h-8zM232 82h8v8h-8zM200 90h40v8h-40zM200 98h8v8h-8zM232 98h8v8h-8zM200 106h8v8h-8zM232 106h8v8h-8zM200 114h8v8h-8zM232 114h8v8h-8zM248 66h32v8h-32zM248 74h8v8h-8zM280 74h8v8h-8zM248 82h8v8h-8zM280 82h8v8h-8zM248 90h32v8h-32zM248 98h8v8h-8zM264 98h8v8h-8zM248 106h8v8h-8zM272 106h8v8h-8zM248 114h8v8h-8zM280 114h8v8h-8zM296 66h8v8h-8zM328 66h8v8h-8zM296 74h8v8h-8zM320 74h8v8h-8zM296 82h8v8h-8zM312 82h8v8h-8zM296 90h16v8h-16zM296 98h8v8h-8zM312 98h8v8h-8zM296 106h8v8h-8zM320 106h8v8h-8zM296 114h8v8h-8zM328 114h8v8h-8zM344 66h32v8h-32zM344 74h8v8h-8zM376 74h8v8h-8zM344 82h8v8h-8zM376 82h8v8h-8zM344 90h8v8h-8zM376 90h8v8h-8zM344 98h8v8h-8zM376 98h8v8h-8zM344 106h8v8h-8zM376 106h8v8h-8zM344 114h32v8h-32zM400 66h24v8h-24zM392 74h8v8h-8zM424 74h8v8h-8zM392 82h8v8h-8zM424 82h8v8h-8zM392 90h8v8h-8zM424 90h8v8h-8zM392 98h8v8h-8zM424 98h8v8h-8zM392 106h8v8h-8zM424 106h8v8h-8zM400 114h24v8h-24zM440 66h8v8h-8zM472 66h8v8h-8zM440 74h8v8h-8zM472 74h8v8h-8zM440 82h8v8h-8zM472 82h8v8h-8zM440 90h8v8h-8zM456 90h8v8h-8zM472 90h8v8h-8zM440 98h8v8h-8zM456 98h8v8h-8zM472 98h8v8h-8zM440 106h16v8h-16zM464 106h16v8h-16zM440 114h8v8h-8zM472 114h8v8h-8zM488 66h8v8h-8zM520 66h8v8h-8zM488 74h16v8h-16zM520 74h8v8h-8zM488 82h8v8h-8zM504 82h8v8h-8zM520 82h8v8h-8zM488 90h8v8h-8zM512 90h16v8h-16zM488 98h8v8h-8zM520 98h8v8h-8zM488 106h8v8h-8zM520 106h8v8h-8zM488 114h8v8h-8zM520 114h8v8h-8zM680 66h8v8h-8zM712 66h8v8h-8zM680 74h8v8h-8zM712 74h8v8h-8zM680 82h8v8h-8zM712 82h8v8h-8zM680 90h8v8h-8zM696 90h8v8h-8zM712 90h8v8h-8zM680 98h8v8h-8zM696 98h8v8h-8zM712 98h8v8h-8zM680 106h16v8h-16zM704 106h16v8h-16zM680 114h8v8h-8zM712 114h8v8h-8zM736 66h24v8h-24zM728 74h8v8h-8zM760 74h8v8h-8zM728 82h8v8h-8zM760 82h8v8h-8zM728 90h40v8h-40zM728 98h8v8h-8zM760 98h8v8h-8zM728 106h8v8h-8zM760 106h8v8h-8zM728 114h8v8h-8zM760 114h8v8h-8zM776 66h40v8h-40zM792 74h8v8h-8zM792 82h8v8h-8zM792 90h8v8h-8zM792 98h8v8h-8zM792 106h8v8h-8zM792 114h8v8h-8zM824 66h40v8h-40zM840 74h8v8h-8zM840 82h8v8h-8zM840 90h8v8h-8zM840 98h8v8h-8zM840 106h8v8h-8zM840 114h8v8h-8zM872 66h32v8h-32zM872 74h8v8h-8zM904 74h8v8h-8zM872 82h8v8h-8zM904 82h8v8h-8zM872 90h32v8h-32zM872 98h8v8h-8zM872 106h8v8h-8zM872 114h8v8h-8zM928 66h24v8h-24zM920 74h8v8h-8zM952 74h8v8h-8zM920 82h8v8h-8zM952 82h8v8h-8zM920 90h40v8h-40zM920 98h8v8h-8zM952 98h8v8h-8zM920 106h8v8h-8zM952 106h8v8h-8zM920 114h8v8h-8zM952 114h8v8h-8zM968 66h32v8h-32zM968 74h8v8h-8zM1000 74h8v8h-8zM968 82h8v8h-8zM1000 82h8v8h-8zM968 90h8v8h-8zM1000 90h8v8h-8zM968 98h8v8h-8zM1000 98h8v8h-8zM968 106h8v8h-8zM1000 106h8v8h-8zM968 114h32v8h-32z"/>
+  <path fill="#a99d90" d="M560 66h40v8h-40zM576 74h8v8h-8zM576 82h8v8h-8zM576 90h8v8h-8zM576 98h8v8h-8zM576 106h8v8h-8zM576 114h8v8h-8zM616 66h24v8h-24zM608 74h8v8h-8zM640 74h8v8h-8zM608 82h8v8h-8zM640 82h8v8h-8zM608 90h8v8h-8zM640 90h8v8h-8zM608 98h8v8h-8zM640 98h8v8h-8zM608 106h8v8h-8zM640 106h8v8h-8zM616 114h24v8h-24z"/>
+</svg>
