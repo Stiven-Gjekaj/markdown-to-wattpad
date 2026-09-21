@@ -1,0 +1,42 @@
+name: CodeQL
+
+# Static analysis for security problems.
+#
+# The page turns text that a visitor pastes into HTML, and puts that HTML in
+# the preview and on the clipboard. That is the one place where this project
+# could let a stranger's text run as code, so it is worth a tool that reads
+# for exactly that on every change.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # A weekly run finds a problem that a new rule discovers in old code, which
+    # no push would ever trigger.
+    - cron: "17 5 * * 1"
+
+jobs:
+  analyze:
+    name: Analyse the TypeScript
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Set up CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      - name: Analyse
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"
