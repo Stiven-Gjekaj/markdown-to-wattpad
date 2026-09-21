@@ -3,7 +3,11 @@ import { readBlocks } from "./blocks";
 import { buildSegments, type Rules, type Segment } from "./paragraphs";
 import { emptyFound, textOf } from "./runs";
 
-const RULES: Rules = { joinDialogue: true, boldSpeakers: true };
+const RULES: Rules = {
+  joinDialogue: true,
+  boldSpeakers: true,
+  styleEnding: true,
+};
 
 function build(markdown: string, rules: Partial<Rules> = {}): Segment[] {
   return buildSegments(
@@ -99,5 +103,33 @@ describe("building paragraphs", () => {
 
   it("keeps a scene break as the writer typed it", () => {
     expect(shape(build("* * *"))).toEqual([["break", ["* * *"]]]);
+  });
+
+  it("styles the ending and the closing thought", () => {
+    const segments = build(
+      '***End of Chapter 4***\n\n***"The Lamp"***\n\n[ Some lights\n\ngo out. ]',
+    );
+    expect(shape(segments)).toEqual([
+      ["ending", ["End of Chapter 4", '"The Lamp"']],
+      ["closing", ["[ Some lights", "go out. ]"]],
+    ]);
+    const [ending, closing] = segments;
+    for (const run of ending.lines.flat()) {
+      expect(run.bold && run.italic && run.underline).toBe(true);
+    }
+    for (const run of closing.lines.flat()) {
+      expect(run.bold && !run.italic && !run.underline).toBe(true);
+    }
+  });
+
+  it("leaves the ending alone when told to", () => {
+    const segments = build('***End of Chapter 4***\n\n***"The Lamp"***', {
+      styleEnding: false,
+    });
+    expect(segments.map((segment) => segment.kind)).toEqual([
+      "narration",
+      "narration",
+    ]);
+    expect(segments[0].lines[0][0].underline).toBe(false);
   });
 });

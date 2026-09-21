@@ -1,4 +1,5 @@
 import type { Block } from "./blocks";
+import { findEndings, type Piece } from "./ending";
 import { type Found, type Line, type Run, readLines } from "./runs";
 import { boldLabel, speakerOf } from "./speaker";
 
@@ -12,9 +13,17 @@ import { boldLabel, speakerOf } from "./speaker";
  * - Dialogue is aligned left, and a run of dialogue lines is one paragraph,
  *   with a line break between the speakers. The Markdown puts a blank line
  *   between those lines or it does not, and Wattpad shows the same block.
+ * - The chapter ends in a block of its own. See ending.ts.
  */
 
-export type Kind = "narration" | "dialogue" | "heading" | "break" | "code";
+export type Kind =
+  | "narration"
+  | "dialogue"
+  | "heading"
+  | "break"
+  | "ending"
+  | "closing"
+  | "code";
 
 export interface Segment {
   kind: Kind;
@@ -26,10 +35,14 @@ export interface Rules {
   joinDialogue: boolean;
   /** Write a plain speaker label, such as "MSTR:", in bold. */
   boldSpeakers: boolean;
+  /** Set the chapter ending and the closing thought in their own style. */
+  styleEnding: boolean;
 }
 
 type Marks = Pick<Run, "bold" | "italic" | "underline">;
 
+const ENDING_MARKS: Marks = { bold: true, italic: true, underline: true };
+const CLOSING_MARKS: Marks = { bold: true, italic: false, underline: false };
 const HEADING_MARKS: Marks = { bold: true, italic: false, underline: false };
 
 export function buildSegments(
@@ -37,9 +50,10 @@ export function buildSegments(
   rules: Rules,
   found: Found,
 ): Segment[] {
+  const pieces: Piece[] = rules.styleEnding ? findEndings(blocks) : blocks;
   const segments: Segment[] = [];
 
-  for (const piece of blocks) {
+  for (const piece of pieces) {
     switch (piece.kind) {
       case "heading":
         push(segments, "heading", styled([piece.text], HEADING_MARKS, found));
@@ -57,6 +71,12 @@ export function buildSegments(
         }
         break;
       }
+      case "ending":
+        push(segments, "ending", styled(piece.lines, ENDING_MARKS, found));
+        break;
+      case "closing":
+        push(segments, "closing", styled(piece.lines, CLOSING_MARKS, found));
+        break;
       case "paragraph":
         segments.push(...paragraphSegments(piece.lines, rules, found));
         break;
