@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  # This runs apart from the build because it needs no Node and no install,
+  # so it answers in seconds. Every document here opens with an HTML header
+  # holding the wordmark, and a check that read only Markdown links would
+  # report success while every logo was broken. This one reads both.
+  docs:
+    name: Check the documentation links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Check that every relative link resolves
+        run: bash scripts/check-links.sh
+
+  verify:
+    name: Lint, type check, test, and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      # The version comes from .nvmrc rather than being written here twice.
+      # Two places that name a version drift apart, and the one that is wrong
+      # is always the one nobody reads.
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # --frozen-lockfile fails rather than quietly rewriting the lockfile, so
+      # a dependency that was added without committing the lockfile is caught
+      # here instead of on the machine of whoever clones the repository next.
+      - name: Install the dependencies
+        run: pnpm install --frozen-lockfile
+
+      # These are the four commands that `pnpm verify` runs, listed apart so
+      # that a failure names which one failed on the job's own summary rather
+      # than in the middle of a log.
+      - name: Lint and check formatting
+        run: pnpm lint
+
+      # Biome reads only the frontmatter of an .astro file, so it cannot lint
+      # the template. `astro check` understands the whole file, and it type
+      # checks the TypeScript as well.
+      - name: Type check
+        run: pnpm check
+
+      # The converter is pure and needs no browser, which is the whole reason
+      # it is kept apart from the page.
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build the site
+        run: pnpm build
+
+      # Keep the built site for the browser job, so it tests the same bytes
+      # rather than building them a second time.
+      - name: Keep the built site
+        uses: actions/upload-artifact@v7
+        with:
+          name: site
+          path: dist
+          include-hidden-files: true
+          retention-days: 1
+
+  browser:
+    name: Drive the site in a browser
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install the dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Take the built site from the job before
+        uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: dist
+
+      # Only Chromium. The page uses nothing that one engine has and another
+      # lacks, and the clipboard tests need the permissions that Chromium
+      # grants to a test.
+      - name: Install the browser
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run the browser tests
+        run: pnpm test:e2e
+
+      - name: Keep the report when something fails
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
