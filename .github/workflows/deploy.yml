@@ -1,0 +1,82 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you redeploy the current main without pushing a commit.
+  workflow_dispatch:
+
+# The deploy action signs in with a token it mints here. Without `pages` and
+# `id-token` the last step fails at the very end, after a full build.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. Cancelling a run in progress can leave the site
+# half replaced, so a queued run waits rather than taking over.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install the dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      # A last check that the base path still matches this repository.
+      #
+      # The name is read from the repository itself rather than written here,
+      # so renaming the repository cannot leave this check green while every
+      # asset on the live site returns 404. GitHub Pages paths are case
+      # sensitive, so the name must match exactly.
+      - name: Check that the base path matches the repository name
+        run: |
+          expected="/${{ github.event.repository.name }}/_astro/"
+          if ! grep -q "$expected" dist/index.html; then
+            echo "::error::dist/index.html has no $expected asset path. The base in astro.config.mjs does not match the repository name, so every asset on the live site would be a 404."
+            grep -o '/[A-Za-z0-9_-]*/_astro/' dist/index.html | sort -u | head -3
+            exit 1
+          fi
+          if [ ! -f dist/.nojekyll ]; then
+            echo "::error::dist/.nojekyll is missing. GitHub Pages would run Jekyll and drop the _astro directory."
+            exit 1
+          fi
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
